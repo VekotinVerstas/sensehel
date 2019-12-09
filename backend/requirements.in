@@ -1,0 +1,7 @@
+django>=2.2,<2.3
+psycopg2
+djangorestframework>=3.9,<3.10
+django-cors-headers>=2.4,<3
+django-extensions
+coreapi>=2.3,<2.4
+pyyaml
