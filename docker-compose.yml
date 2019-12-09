@@ -1,22 +1,6 @@
 version: "3.2"
 services:
 
-  backend:
-    build: ./backend/
-    restart: always
-    environment:
-      DB_HOST: dev-db
-      DB_USER: postgres
-      DB_PASSWORD: password
-      DB_PORT: 5432
-      DB_NAME: forum
-    ports:
-      - "8000:8000"
-    depends_on:
-      - dev-db
-    volumes:
-      - ./backend:/app
-
   dev-db:
     image: postgres:10.3
     ports:
@@ -27,12 +11,33 @@ services:
       POSTGRES_DB: forum
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend/
+    restart: always
+    environment:
+      DB_HOST: dev-db
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      DB_NAME: forum
+    ports:
+      - "28000:8000"
+    depends_on:
+      - dev-db
+    volumes:
+      - ./backend:/app
 
   frontend:
       build: ./frontend
       command: ["npm", "start"]
       ports:
-        - "3000:3000"
+        - "23000:3000"
       volumes:
         - ./frontend:/app/frontend
         - node-modules:/app/frontend/node_modules
