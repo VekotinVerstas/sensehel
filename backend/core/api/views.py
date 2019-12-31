@@ -4,7 +4,7 @@ import logging
 from django.conf import settings
 from rest_framework import generics, status, viewsets, permissions
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 
 from core.utils.elsys import decode_elsys_payload
@@ -177,6 +177,7 @@ def update_sensor_by_identifier(request):
         )
 
 
+@permission_classes([permissions.AllowAny])
 @api_view(['POST'])
 def digita_gw(request):
     """
