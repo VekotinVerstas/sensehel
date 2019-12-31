@@ -5,4 +5,5 @@ omit =
     */migrations/*
     # Measure coverage of application code, not the tests themselves:
     */*_tests.py
+    */tests/*
     manage.py
