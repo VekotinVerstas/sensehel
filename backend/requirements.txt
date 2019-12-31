@@ -16,7 +16,7 @@ idna==2.8                 # via requests
 itypes==1.1.0             # via coreapi
 jinja2==2.10.3            # via coreschema
 markupsafe==1.1.1         # via jinja2
-psycopg2==2.8.4
+psycopg2-binary==2.8.4
 pytz==2019.3              # via django
 pyyaml==5.2
 requests==2.22.0          # via coreapi

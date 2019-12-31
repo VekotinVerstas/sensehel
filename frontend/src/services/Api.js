@@ -54,12 +54,9 @@ class Api {
   }
 
   async getApartment() {
-    try {
-      const res = await this.api.get('apartments');
-      return res[0];
-    } catch (e) {
-      throw e;
-    }
+    const res = await this.api.get('apartments');
+    if (!res.length) throw new Error('No apartment registered to you.');
+    return res[0];
   }
 
   async getAvailableServices() {

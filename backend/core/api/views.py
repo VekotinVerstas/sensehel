@@ -2,7 +2,7 @@ import binascii
 import logging
 
 from django.conf import settings
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, permissions
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
@@ -71,20 +71,11 @@ class ApartmentServiceList(generics.ListAPIView):
     subscribe to considering what sensors are available and what
     requirements services have.
     """
-
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.ServiceSerializer
 
     def get_queryset(self):
-        apartment = models.Apartment.objects.get(user=self.request.user)
-        available_attributes = []
-        for sensor in [
-            apartment_sensor.sensor
-            for apartment_sensor in apartment.apartment_sensors.all()
-        ]:
-            available_attributes.extend(sensor.provides.all())
-        return models.Service.objects.filter(
-            requires__in=available_attributes
-        ).distinct()
+        return models.Service.list_available_for_user(self.request.user)
 
 
 class SensorViewSet(viewsets.ModelViewSet):
@@ -187,7 +178,6 @@ def update_sensor_by_identifier(request):
 
 
 @api_view(['POST'])
-@authentication_classes((BasicAuthentication,))
 def digita_gw(request):
     """
     Digita GW endpoint implementation

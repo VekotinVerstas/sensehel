@@ -125,6 +125,10 @@ class Service(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    @classmethod
+    def list_available_for_user(cls, user):
+        return cls.objects.filter(requires__sensors__apartmentsensor__apartment__user=user).distinct()
+
 
 class Subscription(models.Model):
     """
