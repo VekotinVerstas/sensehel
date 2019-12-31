@@ -5,3 +5,5 @@ django-cors-headers>=2.4,<3
 django-extensions
 coreapi>=2.3,<2.4
 pyyaml
+flake8>=3.7
+coverage>=5.0
