@@ -64,7 +64,7 @@ class ApartmentSensorValue(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Sensor Value for {self.apartment_sensor.apartment} {self.attribute} {self.value}'
+        return f'{self.attribute.description} value for {self.apartment_sensor}: {self.value}'
 
 
 class Sensor(models.Model):
