@@ -11,7 +11,7 @@ class DigitaTest(APITestCase):
         User.objects.create_user(username="nkha", password="123456")
         self.client.login(username="nkha", password="123456")
 
-    def test_invalid_gw_data(self):
+    def test_new_sensor_gw_data(self):
         # No sensor
         data = {
             "DevEUI_uplink": {
@@ -57,7 +57,8 @@ class DigitaTest(APITestCase):
         }
 
         response = self.client.post(self.url, data, format='json')
-        self.assertEqual(404, response.status_code)
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(ApartmentSensor.objects.filter(identifier="A81758FFFE030CF6").exists())
 
     def test_valid_gw_data(self):
         sensor = Sensor.objects.create(name="T-800")

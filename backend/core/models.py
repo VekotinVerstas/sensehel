@@ -41,9 +41,8 @@ class ApartmentSensor(models.Model):
     """
 
     apartment = models.ForeignKey(
-        Apartment, related_name='apartment_sensors', on_delete=models.CASCADE
-    )
-    sensor = models.ForeignKey('Sensor', on_delete=models.DO_NOTHING)
+        Apartment, null=True, related_name='apartment_sensors', on_delete=models.SET_NULL)
+    sensor = models.ForeignKey('Sensor', null=True, on_delete=models.SET_NULL)
     identifier = models.CharField(max_length=255, unique=True)
 
     def __str__(self):

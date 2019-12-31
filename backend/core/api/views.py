@@ -183,36 +183,16 @@ def digita_gw(request):
     Digita GW endpoint implementation
     """
     identifier = request.data['DevEUI_uplink']['DevEUI']
-    try:
-        apsen = models.ApartmentSensor.objects.get(identifier=identifier)
-    except models.ApartmentSensor.DoesNotExist:
-        return Response(
-            {
-                "message": f"ApartmentSensor does not exists with given identifier {identifier}"
-            },
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
+    apsen = models.ApartmentSensor.objects.get_or_create(identifier=identifier)[0]
     payload = binascii.unhexlify(request.data['DevEUI_uplink']['payload_hex'])
     decoded_payload = decode_elsys_payload(payload)
     mapping = settings.DIGITA_GW_PAYLOAD_TO_ATTRIBUTES  # type: dict
 
     for key, value in decoded_payload.items():
-        try:
-            uri = mapping[key]
-            apsenval = apsen.apartment_sensor_values.get(
-                attribute__uri=uri
-            )  # type: models.ApartmentSensorValue
-        except models.ApartmentSensorValue.DoesNotExist:
-            log.debug(
-                "ApartmentSensorValue does not exists with given URI %s (%s)", uri, key
-            )
-        except KeyError:
-            log.debug('No configured mapping to attribute for %s', key)
-            continue
+        uri = mapping.get(key, '')
+        if uri:
+            attr = models.SensorAttribute.objects.get_or_create(uri=uri, defaults={'description': key})[0]
         else:
-            apsenval.value = value
-            apsenval.save()
-            log.debug('Updated %s', apsenval)
-
+            attr = models.SensorAttribute.objects.get_or_create(description=key)[0]
+        apsen.apartment_sensor_values.create(value=value, attribute=attr)
     return Response({"message": "Updated successfully"})
