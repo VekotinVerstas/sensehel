@@ -7,10 +7,6 @@ from core.models import Apartment, ApartmentSensor, Sensor, User
 class DigitaTest(APITestCase):
     url = reverse('digita-gw')
 
-    def setUp(self):
-        User.objects.create_user(username="nkha", password="123456")
-        self.client.login(username="nkha", password="123456")
-
     def test_new_sensor_gw_data(self):
         # No sensor
         data = {
@@ -62,7 +58,7 @@ class DigitaTest(APITestCase):
 
     def test_valid_gw_data(self):
         sensor = Sensor.objects.create(name="T-800")
-        apartment = Apartment.objects.create(user=User.objects.get(username="nkha"))
+        apartment = Apartment.objects.create()
         ApartmentSensor.objects.create(
             apartment=apartment, sensor=sensor, identifier="A81758FFFE030CF6"
         )

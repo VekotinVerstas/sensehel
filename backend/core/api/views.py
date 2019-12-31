@@ -177,8 +177,8 @@ def update_sensor_by_identifier(request):
         )
 
 
-@permission_classes([permissions.AllowAny])
 @api_view(['POST'])
+@permission_classes([permissions.AllowAny])
 def digita_gw(request):
     """
     Digita GW endpoint implementation
