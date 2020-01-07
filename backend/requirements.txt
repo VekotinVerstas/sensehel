@@ -25,8 +25,9 @@ pycodestyle==2.5.0        # via flake8
 pyflakes==2.1.1           # via flake8
 pytz==2019.3              # via django
 pyyaml==5.2
-requests==2.22.0          # via coreapi
+requests==2.22.0
 six==1.13.0               # via django-extensions
 sqlparse==0.3.0           # via django
 uritemplate==3.0.0        # via coreapi
 urllib3==1.25.7           # via requests
+uuid==1.30

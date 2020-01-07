@@ -3,8 +3,7 @@ import logging
 
 from django.conf import settings
 from rest_framework import generics, status, viewsets, permissions
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from core.utils.elsys import decode_elsys_payload
@@ -15,57 +14,31 @@ from .. import models
 log = logging.getLogger(__name__)
 
 
-class ServiceViewSet(viewsets.ModelViewSet):
+class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Service.objects.all()
     serializer_class = serializers.ServiceSerializer
 
 
-class ApartmentViewSet(viewsets.ModelViewSet):
+class ApartmentViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Serialize Apartments current authenticated user belongs to.
     """
-
     serializer_class = serializers.ApartmentSerializer
+    queryset = models.Apartment.objects.none()  # For inspection only; get_queryset is used live
 
     def get_queryset(self):
-        return models.Apartment.objects.filter(user=self.request.user)
-
-
-class UserViewSet(
-    viewsets.mixins.ListModelMixin,
-    viewsets.mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    """
-    Serialize all subscriptions and provide methods to create new
-    subscriptions and terminate old ones.
-    """
-
-    serializer_class = serializers.UserSerializer
-
-    def get_queryset(self):
-        return models.User.objects.filter(user=self.request.user)
-
-    def destroy(self, request, *args, **kwargs):
-        self.request.user.delete()
-        return Response({'message': 'Removed'}, status=status.HTTP_202_ACCEPTED)
+        return self.request.user.apartments.all()
 
 
 class ApartmentSensorViewSet(viewsets.ModelViewSet):
-    queryset = (
-        models.ApartmentSensor.objects.all()
-    )  # TODO: require user has access for this resource
     serializer_class = serializers.ApartmentSensorSerializer
+    queryset = models.ApartmentSensor.objects.none()  # For inspection only; get_queryset is used live
+
+    def get_queryset(self):
+        return models.ApartmentSensor.list_for_user(self.request.user)
 
 
-class ApartmentSensorValueViewSet(viewsets.ModelViewSet):
-    queryset = (
-        models.ApartmentSensorValue.objects.all()
-    )  # TODO: require user has access for this resource
-    serializer_class = serializers.ApartmentSensorValueSerializer
-
-
-class ApartmentServiceList(generics.ListAPIView):
+class AvailableServicesList(generics.ListAPIView):
     """
     Serialize all services current authenticated user could
     subscribe to considering what sensors are available and what
@@ -98,83 +71,18 @@ class SubscriptionViewSet(
     Serialize all subscriptions and provide methods to create new
     subscriptions and terminate old ones.
     """
-
     serializer_class = serializers.SubscriptionSerializer
+    queryset = models.Subscription.objects.none()  # For inspection only; get_queryset is used live
+
+    serializer_classes = {
+        'create': serializers.CreateSubscriptionSerializer
+    }
 
     def get_queryset(self):
         return models.Subscription.objects.filter(user=self.request.user)
 
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        # TODO: using serializers would be the right way ..
-
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-
-        # headers = self.get_success_headers(serializer.data)
-        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        service_id = int(request.data['service'])
-        if models.Subscription.objects.filter(
-            user=self.request.user, service_id=service_id
-        ).exists():
-            return Response(
-                {"detail": "Subscription for this service exists"},
-                status=status.HTTP_409_CONFLICT,
-            )
-
-        models.Subscription.objects.create(
-            user=self.request.user, service_id=service_id
-        )
-        return Response({}, status=status.HTTP_201_CREATED)
-
-
-@api_view(['POST'])
-@authentication_classes((BasicAuthentication,))
-def update_sensor_by_identifier(request):
-    """
-    Example payload::
-
-        {
-            "identifier": "ABCDEFGH",
-            "attributes": [
-                {
-                    "URI": "http://finto.fi/afo/en/page/p4770",
-                    "value": 200
-                },
-                {
-                    "URI": "http://urn.fi/URN:NBN:fi:au:ucum:r73",
-                    "value": 21
-                }
-
-            ]
-        }
-    """
-    try:
-        apsen = models.ApartmentSensor.objects.get(
-            identifier=request.data['identifier']
-        )
-
-        for attr in request.data['attributes']:
-            apsenval = apsen.apartment_sensor_values.get(
-                attribute__uri=attr['URI']
-            )  # type: models.ApartmentSensorValue
-            apsenval.value = attr['value']
-            apsenval.save()
-
-        return Response({"message": "Updated successfully"})
-    except models.ApartmentSensor.DoesNotExist:
-        return Response(
-            {"message": "ApartmentSensor does not exists with given identifier"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-    except models.ApartmentSensorValue.DoesNotExist:
-        return Response(
-            {"message": "ApartmentSensorValue does not exists with given URI"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.serializer_class)
 
 
 @api_view(['POST'])
@@ -195,5 +103,6 @@ def digita_gw(request):
             attr = models.SensorAttribute.objects.get_or_create(uri=uri, defaults={'description': key})[0]
         else:
             attr = models.SensorAttribute.objects.get_or_create(description=key)[0]
-        apsen.apartment_sensor_values.create(value=value, attribute=attr)
+        apsen_attr = apsen.attributes.get_or_create(attribute=attr)[0]
+        apsen_attr.values.create(value=value)
     return Response({"message": "Updated successfully"})

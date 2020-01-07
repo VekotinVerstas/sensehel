@@ -30,7 +30,7 @@ class ServiceTest(APITestCase):
     def test_available_services_with_no_sensors(self):
         # Given that a user with an apartment but no sensors is logged in
         user = User.objects.create(username="CedrikSenseless")
-        user.apartment_set.create()
+        user.apartments.create()
         self.client.force_login(user)
 
         # When requesting the list of available services
@@ -45,7 +45,7 @@ class ServiceTest(APITestCase):
     def test_available_services(self):
         # Given that a user with an apartment is logged in
         user = User.objects.create(username="CedrikSensei")
-        apartment = user.apartment_set.create()
+        apartment = user.apartments.create()
         self.client.force_login(user)
 
         # And given that there are available services related to the sensors in the user's apartment
