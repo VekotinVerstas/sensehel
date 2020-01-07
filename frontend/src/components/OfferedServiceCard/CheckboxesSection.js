@@ -21,51 +21,13 @@ const styles = {
 };
 
 const CheckboxesSection = ({
-  termsChecked,
   consentChecked,
   handleChange,
   disabled,
   termsAndConditions,
-  privacyPolicy,
   classes
 }) => (
-  <div className="offered-service-card__row--checkboxes">
-    <FormControlLabel
-      control={
-        <Checkbox
-          checked={termsChecked}
-          onChange={() => handleChange('termsChecked')}
-          classes={{
-            root: classes.root,
-            checked: classes.checked,
-            disabled: classes.disabled
-          }}
-          disabled={disabled}
-        />
-      }
-      label={
-        <div>
-          <span className="body-text">Please read our </span>
-          <a
-            href={termsAndConditions}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="body-text"
-          >
-            <b>terms and conditions</b>
-          </a>
-          <span className="body-text"> and view our </span>
-          <a
-            href={privacyPolicy}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="body-text"
-          >
-            <b>privacy policy here *</b>
-          </a>
-        </div>
-      }
-    />
+  <div className="card-section">
     <FormControlLabel
       control={
         <Checkbox
@@ -80,12 +42,12 @@ const CheckboxesSection = ({
         />
       }
       label={
-        <div>
-          <span className="body-text">
-            I have read and understood the terms and conditions and consent to
-            my details being stored *
-          </span>
-        </div>
+        <span className="body-text">
+          I have read and understood
+          the <a href={termsAndConditions} target="_blank" rel="noopener noreferrer" className="body-text">
+            <b>terms and conditions</b>
+          </a> and consent to my details being stored *
+        </span>
       }
     />
   </div>

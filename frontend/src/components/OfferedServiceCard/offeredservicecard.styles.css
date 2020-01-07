@@ -16,7 +16,7 @@
 .card__row .service-image {
   width: 95%; /* older browsers */
   width: calc(100% - 15px);
-  max-height: 120px;
+  height: 120px;
   object-fit: cover;
   margin: 15px 15px 15px 0;
 }
@@ -29,4 +29,8 @@
 
 .offered-service-card__detail-container {
   padding: 0 0 5px 0;
+}
+
+.card-section {
+  padding: 0 10px 10px 10px;
 }

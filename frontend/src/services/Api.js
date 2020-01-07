@@ -78,9 +78,11 @@ class Api {
     return res;
   }
 
-  addSubscribedService(id) {
+  addSubscribedService(id, apsenAttrIds, includeHistory) {
     return this.api.post('subscriptions/', {
-      service: id
+      service: id,
+      apartment_sensor_attributes: apsenAttrIds,
+      include_history: includeHistory
     });
   }
 

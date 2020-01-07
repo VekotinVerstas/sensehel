@@ -96,9 +96,9 @@ class SubscriptionsPage extends Component {
     });
   };
 
-  handleSubscribe = async id => {
+  handleSubscribe = async (id, apsenAttrIds, includeHistory) => {
     try {
-      await API.addSubscribedService(id);
+      await API.addSubscribedService(id, apsenAttrIds, includeHistory);
       this.handleRequestSuccess({
         title: 'Successfully subscribed!',
         subtitle: 'You can now view your subscriptions in your home page'
@@ -148,7 +148,8 @@ class SubscriptionsPage extends Component {
               key={service.id}
               service={service}
               subscribed={this.isSubscribed(service.id)}
-              handleSubscribe={() => this.handleSubscribe(service.id)}
+              handleSubscribe={(apsenAttrIds, includeHistory) =>
+                this.handleSubscribe(service.id, apsenAttrIds, includeHistory)}
               handleUnsubscribe={() => this.handleUnsubscribe(service.id)}
             />
           ))}
