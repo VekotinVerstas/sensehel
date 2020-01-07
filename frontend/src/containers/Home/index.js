@@ -77,7 +77,7 @@ class HomePage extends Component {
 
   fetchSensorValues = async () => {
     try {
-      const sensorValues = await API.getApartmentSensors();
+      const sensorValues = await API.getSensorValues();
 
       this.setState({ sensorValues });
     } catch (e) {
