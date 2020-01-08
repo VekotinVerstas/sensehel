@@ -97,6 +97,7 @@ def digita_gw(request):
     decoded_payload = decode_elsys_payload(payload)
     mapping = settings.DIGITA_GW_PAYLOAD_TO_ATTRIBUTES  # type: dict
 
+    new_values = []
     for key, value in decoded_payload.items():
         uri = mapping.get(key, '')
         if uri:
@@ -104,5 +105,6 @@ def digita_gw(request):
         else:
             attr = models.SensorAttribute.objects.get_or_create(description=key)[0]
         apsen_attr = apsen.attributes.get_or_create(attribute=attr)[0]
-        apsen_attr.values.create(value=value)
+        new_values.append(apsen_attr.values.create(value=value))
+    models.Subscription.handle_new_values(new_values)
     return Response({"message": "Updated successfully"})

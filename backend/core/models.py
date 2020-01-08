@@ -1,8 +1,10 @@
 import requests
 import uuid
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import mail_admins
 from django.db import models
 from django.utils import timezone
+from requests import HTTPError
 from rest_framework import serializers
 
 
@@ -169,8 +171,8 @@ class Subscription(models.Model):
     """
     User subscribes to a service
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='subscriptions')
     attributes = models.ManyToManyField(ApartmentSensorAttribute, related_name='subscriptions')
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -194,17 +196,37 @@ class Subscription(models.Model):
         self.registered = timezone.now()
         self.save()
 
+    def send_values(self, values):
+        """
+        Send the passed values to the external service.
+        """
+        data = SubscriptionDataSerializer(self, values=values).data
+        response = self._post(self.service.data_url, data=data)
+        response.raise_for_status() # Raises exception if status code >=400
+
     def submit_history(self):
         """
         Send existing data values for the ApartmentSensorAttributes connected to this subscription to the
         external service. Intended to provide new subscriptions with any already collected data.
         """
-        data = SubscriptionDataSerializer(self, values=self.list_values()).data
-        response = self._post(self.service.data_url, data=data)
-        response.raise_for_status() # Raises exception if status code >=400
+        self.send_values(self.list_values())
 
     def list_values(self):
         return ApartmentSensorValue.objects.filter(apartment_sensor_attribute__subscriptions=self).distinct()
+
+    @classmethod
+    def handle_new_values(cls, new_values):
+        """
+        For every subscription related to any of the passed values, send the appropriate subset of values to the
+        external service.
+        """
+        value_ids = [v.id for v in new_values]
+        attr_ids = [v.apartment_sensor_attribute_id for v in new_values]
+        for subscription in cls.objects.filter(attributes__in=attr_ids).distinct():
+            try:
+                subscription.send_values(subscription.list_values().filter(id__in=value_ids))
+            except HTTPError as e:
+                mail_admins(f'Sensehel service error: {subscription.service}', str(e), fail_silently=True)
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

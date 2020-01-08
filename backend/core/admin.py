@@ -76,9 +76,7 @@ admin.site.register(Apartment, ApartmentAdmin)
 admin.site.register(ApartmentSensor, ApartmentSensorAdmin)
 admin.site.register(ApartmentSensorAttribute, ApartmentSensorAttributeAdmin)
 admin.site.register(Sensor)
-admin.site.register(
-    ApartmentSensorValue, ApartmentSensorValueAdmin
-)  # TODO: For testing
+admin.site.register(ApartmentSensorValue, ApartmentSensorValueAdmin)
 admin.site.register(Service)
 admin.site.register(Subscription)
 admin.site.register(SensorAttribute, SensorAttributeAdmin)
