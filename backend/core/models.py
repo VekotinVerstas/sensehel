@@ -191,7 +191,7 @@ class Subscription(models.Model):
         Register this subscription with the remote service.
         """
         serializer = CreateSubscriptionSerializer(self)
-        response = self._post(self.service.subscribe_url, data=serializer.data)
+        response = self._post(self.service.subscribe_url, json=serializer.data)
         response.raise_for_status() # Raises exception if status code >=400
         self.registered = timezone.now()
         self.save()
@@ -201,7 +201,7 @@ class Subscription(models.Model):
         Send the passed values to the external service.
         """
         data = SubscriptionDataSerializer(self, values=values).data
-        response = self._post(self.service.data_url, data=data)
+        response = self._post(self.service.data_url, json=data)
         response.raise_for_status() # Raises exception if status code >=400
 
     def submit_history(self):

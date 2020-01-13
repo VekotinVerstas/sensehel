@@ -26,6 +26,8 @@ class ServiceSerializer(serializers.HyperlinkedModelSerializer):
             'eula_url',
             'img_logo_url',
             'img_service_url',
+            'report_url',
+            'preview_url',
             'requires'
         )
 
@@ -108,4 +110,4 @@ class SubscriptionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Subscription
-        fields = ('id', 'created_at', 'updated_at', 'service')
+        fields = ('id', 'uuid', 'created_at', 'updated_at', 'service')
