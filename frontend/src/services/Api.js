@@ -68,7 +68,7 @@ class Api {
     return this.api.get('available-services/');
   }
 
-  async getSubscribedServices() {
+  async  getServiceSubscriptions() {
     const res = await this.api.get('subscriptions/');
     localStorage.setItem(
       LocalStorageKeys.SUBSCRIBED_SERVICES,
@@ -81,7 +81,7 @@ class Api {
   addSubscribedService(id, apsenAttrIds, includeHistory) {
     return this.api.post('subscriptions/', {
       service: id,
-      apartment_sensor_attributes: apsenAttrIds,
+      attributes: apsenAttrIds,
       include_history: includeHistory
     });
   }

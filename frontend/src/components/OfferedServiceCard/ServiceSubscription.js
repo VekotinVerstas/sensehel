@@ -47,7 +47,7 @@ class ServiceSubscription extends Component {
 
     return (
       <>
-        <div className="offered-service-card__detail-container">
+        {!subscribed && <div className="offered-service-card__detail-container">
           {sensorAttributes.length &&
             <div className="card-section">
               <h5 className="subheader">Select data to share with service:</h5>
@@ -91,12 +91,12 @@ class ServiceSubscription extends Component {
             disabled={subscribed}
             termsAndConditions={service.eula_url}
           />
-        </div>
+        </div>}
 
         <BottomButton
           variant={subscribed ? 'negative' : 'default'}
           title={buttonTitle}
-          onClick={subscribed ? this.onUnsubscribeClick : this.onSubscribeClick}
+          onClick={() => subscribed ? this.onUnsubscribeClick() : this.onSubscribeClick()}
           disabled={!subscribed && (!consentChecked || !selectedAttributes.length)}
           loading={requesting}
         />

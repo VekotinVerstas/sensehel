@@ -6,8 +6,6 @@ import BottomButton from '../BottomButton';
 const SubscribedServiceCard = ({
   logo,
   title,
-  description,
-  serviceImage,
   url
 }) => (
   <div className="card">
@@ -22,15 +20,7 @@ const SubscribedServiceCard = ({
 
       <div className="card__col3" />
     </div>
-
-    <div className="card__row">
-      <img className="service-image" src={serviceImage} alt="placeholder" />
-    </div>
-
-    <div className="card__row">
-      <p className="body-text dark-text sub-service__text">{description}</p>
-    </div>
-
+    <iframe src={url} height={320} width="100%" />
     <BottomButton
       onClick={() => {
         window.open(url);

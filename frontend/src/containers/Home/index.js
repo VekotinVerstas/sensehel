@@ -13,7 +13,7 @@ import SensorConfig from '../../config/SensorConfig';
 
 class HomePage extends Component {
   state = {
-    subscribedServices: [],
+    serviceSubscriptions: [],
     refreshing: false,
     errorMessage: '',
     name: '',
@@ -47,9 +47,9 @@ class HomePage extends Component {
 
   fetchSubscribedServices = async () => {
     try {
-      const subscribedServices = await API.getSubscribedServices();
+      const serviceSubscriptions = await API. getServiceSubscriptions();
 
-      this.setState({ subscribedServices });
+      this.setState({ serviceSubscriptions });
     } catch (e) {
       this.setState({
         errorMessage: {
@@ -104,7 +104,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      subscribedServices,
+      serviceSubscriptions,
       refreshing,
       errorMessage,
       name,
@@ -144,15 +144,13 @@ class HomePage extends Component {
                 subscriptions
               </p>
 
-              {subscribedServices.length > 0 ? (
-                subscribedServices.map(({ service: s }) => (
+              {serviceSubscriptions.length > 0 ? (
+                serviceSubscriptions.map(({ uuid, service: s }) => (
                   <SubscribedServiceCard
-                    key={s.name}
+                    key={uuid}
                     logo={s.img_logo_url}
                     title={s.name}
-                    description={s.description}
-                    serviceImage={s.img_service_url}
-                    url={s.link}
+                    url={s.report_url + '?subscription=' + uuid}
                   />
                 ))
               ) : (

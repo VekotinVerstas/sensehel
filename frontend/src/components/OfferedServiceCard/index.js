@@ -21,9 +21,7 @@ const OfferedServiceCard = ({
     <div>
       <Card image={logoUrl} name={name} description={description} CollapsibleComponent={
           <>
-            <div className="card__row">
-              <img className="service-image" src={serviceImageUrl} alt="placeholder" />
-            </div>
+            <img className="service-image" src={serviceImageUrl} alt="placeholder" />
             <ServiceSubscription {...{service, subscribed, handleSubscribe, handleUnsubscribe}} />
           </>
         }

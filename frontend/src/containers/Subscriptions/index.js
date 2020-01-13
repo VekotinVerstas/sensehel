@@ -131,7 +131,7 @@ class SubscriptionsPage extends Component {
 
   refetchSubscriptions = async () => {
     // Refetch subscribed services and set state to rerender
-    await API.getSubscribedServices();
+    await API. getServiceSubscriptions();
     this.fetchSubscribedServiceIds();
   };
 

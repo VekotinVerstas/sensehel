@@ -26,3 +26,7 @@ code {
     top: 23%; /* Since AppHeader height is 25%  */
   }
 }
+
+iframe {
+  border: none;
+}
