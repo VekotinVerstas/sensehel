@@ -78,7 +78,7 @@ class SubscriptionTest(SenseHelAPITestCase):
         # And the subscription is submitted to the external service
         ([url], kwargs) = self.mock_requests.last_request
         self.assertEqual(url, self.service.subscribe_url)
-        self.assert_dict_contains(kwargs['data'], {
+        self.assert_dict_contains(kwargs['json'], {
             'uuid': str(subscription.uuid),
             'attributes': [{
                 'id': self.temperature.id,
@@ -110,7 +110,7 @@ class SubscriptionTest(SenseHelAPITestCase):
         # And the existing measurements are submitted to the external service
         ([url], kwargs) = self.mock_requests.last_request
         self.assertEqual(url, self.service.data_url)
-        self.assert_dict_contains(kwargs['data'], {
+        self.assert_dict_contains(kwargs['json'], {
             'uuid': str(subscription.uuid),
             'values': [{
                 'attribute': apsen_attr.id,
@@ -139,7 +139,7 @@ class SubscriptionTest(SenseHelAPITestCase):
         # And the data is submitted to the external service
         ([url], kwargs) = self.mock_requests.last_request
         self.assertEqual(url, self.service.data_url)
-        self.assert_dict_contains(kwargs['data'], {
+        self.assert_dict_contains(kwargs['json'], {
             'uuid': str(subscription.uuid),
             'values': [{
                 'attribute': apsen_attr.id,

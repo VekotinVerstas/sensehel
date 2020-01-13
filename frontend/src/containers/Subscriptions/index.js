@@ -110,6 +110,7 @@ class SubscriptionsPage extends Component {
         title: 'Could not subscribe to service',
         subtitle: `${e.message}`
       });
+      throw e;
     }
   };
 
