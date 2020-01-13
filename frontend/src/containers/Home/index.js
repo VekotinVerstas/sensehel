@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import './home.styles.css';
-import AppHeader from '../../components/AppHeader';
-import SensorValueCard from '../../components/SensorValueCard';
-import SubscribedServiceCard from '../../components/SubscribedServiceCard';
-import NoSubscriptionsCard from '../../components/NoSubscriptionsCard';
-import PullToRefresh from '../../components/PullToRefresh';
-import API from '../../services/Api';
-import CustomizedSnackbar from '../../components/Snackbar';
-import LocalStorageKeys from '../../config/LocalStorageKeys';
-import SensorConfig from '../../config/SensorConfig';
+import AppHeader from 'components/AppHeader';
+import SensorValueCard from 'components/SensorValueCard';
+import SubscribedServiceCard from 'components/SubscribedServiceCard';
+import NoSubscriptionsCard from 'components/NoSubscriptionsCard';
+import PullToRefresh from 'components/PullToRefresh';
+import API from 'services/Api';
+import CustomizedSnackbar from 'components/Snackbar';
+import LocalStorageKeys from 'config/LocalStorageKeys';
+import SensorConfig from 'config/SensorConfig';
 
 class HomePage extends Component {
   state = {
@@ -145,13 +145,8 @@ class HomePage extends Component {
               </p>
 
               {serviceSubscriptions.length > 0 ? (
-                serviceSubscriptions.map(({ uuid, service: s }) => (
-                  <SubscribedServiceCard
-                    key={uuid}
-                    logo={s.img_logo_url}
-                    title={s.name}
-                    url={s.report_url + '?subscription=' + uuid}
-                  />
+                serviceSubscriptions.map((subscription) => (
+                  <SubscribedServiceCard key={subscription.uuid} subscription={subscription}/>
                 ))
               ) : (
                 <NoSubscriptionsCard onClick={this.handleChangeTab} />
