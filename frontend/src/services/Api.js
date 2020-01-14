@@ -2,7 +2,8 @@ import axios from 'axios';
 import _ from 'lodash';
 import LocalStorageKeys from '../config/LocalStorageKeys';
 
-const URL = 'http://127.0.0.1:8000/api/';
+// const URL = 'http://127.0.0.1:8000/api/';
+const URL = '/api/';
 
 class Api {
   constructor(baseUrl) {

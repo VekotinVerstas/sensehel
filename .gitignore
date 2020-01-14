@@ -2,3 +2,4 @@
 postgres-data/
 .envrc
 venv
+backend/static/
