@@ -1,7 +1,0 @@
-#!/bin/bash
-if [ $# -ne 1 ]; then
-  echo 1>&2 "Usage: $0 <token>"
-  exit 3
-fi
-
-curl -sH "Authorization: Token $1" -d '{"identifier":"ABCDEFGH","attributes":[{"URI":"http://finto.fi/afo/en/page/p4770","value":66},{"URI":"http://urn.fi/URN:NBN:fi:au:ucum:r73","value":77}]}' -H "Content-Type: application/json" -X POST "http://127.0.0.1:8000/api/update-sensor-by-identifier/"

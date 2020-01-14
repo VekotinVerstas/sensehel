@@ -16,20 +16,8 @@ class ApartmentSensorTest(APITestCase):
             uri='test uri', description='test description'
         )
         ApartmentSensorValue.objects.create(
-            apartment_sensor=apartment_sensor, value=12, attribute=attribute
-        )
-
-    def test_apartment_sensor_value(self):
-        # Without logged in user
-        response = self.client.get('/api/apartmentsensorvalues/')
-        self.assertEqual(401, response.status_code)
-
-        # With logged in user
-        self.client.login(username="nkha", password="123456")
-        response = self.client.get('/api/apartmentsensorvalues/')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['value'], 12)
-        self.assertEqual(response.data[0]['description'], 'test description')
+            apartment_sensor_attribute=apartment_sensor.attributes.create(attribute=attribute),
+            value=12)
 
     def test_sensor_attribute(self):
         # Without logged in user

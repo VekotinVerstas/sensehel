@@ -14,7 +14,7 @@ class SensorsPage extends Component {
 
   async componentWillMount() {
     try {
-      const sensors = await API.getApartmentSensors();
+      const sensors = await API.getSensorValues();
 
       this.setState({ sensors });
     } catch (e) {

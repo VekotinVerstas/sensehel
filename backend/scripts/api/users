@@ -1,6 +1,0 @@
-#!/bin/bash
-if [ $# -ne 1 ]; then
-  echo 1>&2 "Usage: $0 <token>"
-  exit 3
-fi
-curl -sH "Authorization: Token $1" "http://127.0.0.1:8000/api/users/" | jq

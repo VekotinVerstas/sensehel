@@ -40,7 +40,6 @@ class Card extends Component {
       image,
       name,
       description,
-      AdditionalSummaryRow,
       CollapsibleComponent,
       classes
     } = this.props;
@@ -55,10 +54,7 @@ class Card extends Component {
 
           <div className="card__col2">
             <p className="headline card__text">{name}</p>
-
-            <Fade in={!expanded} timeout={200} unmountOnExit>
-              <p className="body-text card__text">{description}</p>
-            </Fade>
+            <p className="body-text card__text">{description}</p>
           </div>
 
           <div className="card__col3">
@@ -75,18 +71,9 @@ class Card extends Component {
           </div>
         </div>
 
-        <Fade in={!expanded} timeout={200} unmountOnExit>
-          <div className="card__row">
-            <div className="card__col1" />
-            <div className="card__col2">{AdditionalSummaryRow}</div>
-
-            <div className="card__col3" />
-          </div>
-        </Fade>
-
         <Collapse in={expanded} timeout="auto" mountOnEnter unmountOnExit>
           <Slide
-            direction="up"
+            direction="down"
             in={expanded}
             timeout={500}
             mountOnEnter
@@ -104,14 +91,12 @@ Card.propTypes = {
   image: PropTypes.any, // eslint-disable-line
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
-  AdditionalSummaryRow: PropTypes.node,
   CollapsibleComponent: PropTypes.node
 };
 
 Card.defaultProps = {
   image: Images.Placeholder,
   description: '',
-  AdditionalSummaryRow: null,
   CollapsibleComponent: null
 };
 

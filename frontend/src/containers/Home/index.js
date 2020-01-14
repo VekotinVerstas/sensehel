@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import './home.styles.css';
-import AppHeader from '../../components/AppHeader';
-import SensorValueCard from '../../components/SensorValueCard';
-import SubscribedServiceCard from '../../components/SubscribedServiceCard';
-import NoSubscriptionsCard from '../../components/NoSubscriptionsCard';
-import PullToRefresh from '../../components/PullToRefresh';
-import API from '../../services/Api';
-import CustomizedSnackbar from '../../components/Snackbar';
-import LocalStorageKeys from '../../config/LocalStorageKeys';
-import SensorConfig from '../../config/SensorConfig';
+import AppHeader from 'components/AppHeader';
+import SensorValueCard from 'components/SensorValueCard';
+import SubscribedServiceCard from 'components/SubscribedServiceCard';
+import NoSubscriptionsCard from 'components/NoSubscriptionsCard';
+import PullToRefresh from 'components/PullToRefresh';
+import API from 'services/Api';
+import CustomizedSnackbar from 'components/Snackbar';
+import LocalStorageKeys from 'config/LocalStorageKeys';
+import SensorConfig from 'config/SensorConfig';
 
 class HomePage extends Component {
   state = {
-    subscribedServices: [],
+    serviceSubscriptions: [],
     refreshing: false,
     errorMessage: '',
     name: '',
@@ -47,9 +47,9 @@ class HomePage extends Component {
 
   fetchSubscribedServices = async () => {
     try {
-      const subscribedServices = await API.getSubscribedServices();
+      const serviceSubscriptions = await API. getServiceSubscriptions();
 
-      this.setState({ subscribedServices });
+      this.setState({ serviceSubscriptions });
     } catch (e) {
       this.setState({
         errorMessage: {
@@ -77,7 +77,7 @@ class HomePage extends Component {
 
   fetchSensorValues = async () => {
     try {
-      const sensorValues = await API.getApartmentSensors();
+      const sensorValues = await API.getSensorValues();
 
       this.setState({ sensorValues });
     } catch (e) {
@@ -104,7 +104,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      subscribedServices,
+      serviceSubscriptions,
       refreshing,
       errorMessage,
       name,
@@ -144,16 +144,9 @@ class HomePage extends Component {
                 subscriptions
               </p>
 
-              {subscribedServices.length > 0 ? (
-                subscribedServices.map(({ service: s }) => (
-                  <SubscribedServiceCard
-                    key={s.name}
-                    logo={s.img_logo_url}
-                    title={s.name}
-                    description={s.description}
-                    serviceImage={s.img_service_url}
-                    url={s.link}
-                  />
+              {serviceSubscriptions.length > 0 ? (
+                serviceSubscriptions.map((subscription) => (
+                  <SubscribedServiceCard key={subscription.uuid} subscription={subscription}/>
                 ))
               ) : (
                 <NoSubscriptionsCard onClick={this.handleChangeTab} />
