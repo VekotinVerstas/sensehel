@@ -2,6 +2,7 @@ import binascii
 import logging
 
 from django.conf import settings
+from requests import HTTPError
 from rest_framework import generics, status, viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -84,9 +85,22 @@ class SubscriptionViewSet(
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
 
-    def perform_destroy(self, instance):
-        instance.delete_in_service()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        try:
+            instance.delete_in_service()
+        except HTTPError:
+            return Response('Could not unsubscribe in service.', status=502)
+
         instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except HTTPError:
+            return Response('Could not register subscription with service.', status=502)
 
 
 @api_view(['POST'])
