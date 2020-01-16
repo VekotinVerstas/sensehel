@@ -149,6 +149,7 @@ class Service(models.Model):
     img_service_url = models.CharField(max_length=255, null=True)
 
     subscribe_url = models.URLField(default='', help_text='URL to which new subscriptions should be POSTed')
+    unsubscribe_url = models.URLField(default='', help_text='URL to which unsubscribe requests should be POSTed')
     data_url = models.URLField(default='', help_text='URL to which sensor data should be POSTed')
     report_url = models.URLField(default='', help_text='URL to the main page presenting a subscription')
     preview_url = models.URLField(
@@ -196,13 +197,21 @@ class Subscription(models.Model):
         self.registered = timezone.now()
         self.save()
 
+    def delete_in_service(self):
+        """
+        Delete this subscription in the remote service.
+        """
+        data = {'uuid': str(self.uuid), 'auth_token': str(self.service.auth_token)}
+        response = self._post(self.service.unsubscribe_url, json=data)
+        response.raise_for_status()  # Raises exception if status code >=400
+
     def send_values(self, values):
         """
         Send the passed values to the external service.
         """
         data = SubscriptionDataSerializer(self, values=values).data
         response = self._post(self.service.data_url, json=data)
-        response.raise_for_status() # Raises exception if status code >=400
+        response.raise_for_status()  # Raises exception if status code >=400
 
     def submit_history(self):
         """

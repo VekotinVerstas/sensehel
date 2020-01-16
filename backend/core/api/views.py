@@ -84,6 +84,10 @@ class SubscriptionViewSet(
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
 
+    def perform_destroy(self, instance):
+        instance.delete_in_service()
+        instance.delete()
+
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

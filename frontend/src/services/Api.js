@@ -17,7 +17,7 @@ class Api {
     this.api.interceptors.response.use(
       response => response.data,
       error => {
-        if (error.response.status === 401) {
+        if (error.response && (error.response.status === 401)) {
           localStorage.clear();
 
           // Hacky-ish and ugly but works and quick
@@ -84,7 +84,7 @@ class Api {
       service: id,
       attributes: apsenAttrIds,
       include_history: includeHistory
-    });
+    }, {timeout: 20000});
   }
 
   deleteSubscribedService(id) {
