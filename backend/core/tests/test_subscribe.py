@@ -92,7 +92,7 @@ class SubscriptionTest(SenseHelAPITestCase):
         apsen_attr = self.apsen.attributes.create(attribute=self.temperature)
 
         # And given that some measurements have already been stored for the sensor
-        value = apsen_attr.values.create(value=22)
+        value = apsen_attr.values.create(value=22.0)
 
         # When requesting to create a new subscription, including history
         with self.mock_requests:
@@ -115,7 +115,7 @@ class SubscriptionTest(SenseHelAPITestCase):
             'values': [{
                 'attribute': apsen_attr.id,
                 'timestamp': serializers.DateTimeField().to_representation(value.updated_at),
-                'value': value.value}],
+                'value': str(value.value)}],
             'auth_token': str(self.service.auth_token)})
 
     def test_subscription_receives_data(self):
@@ -144,5 +144,5 @@ class SubscriptionTest(SenseHelAPITestCase):
             'values': [{
                 'attribute': apsen_attr.id,
                 'timestamp': serializers.DateTimeField().to_representation(value.updated_at),
-                'value': value.value}],
+                'value': str(value.value)}],
             'auth_token': str(self.service.auth_token)})
