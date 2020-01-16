@@ -33,6 +33,7 @@ class SubscriptionTest(SenseHelAPITestCase):
             description='temperature', uri='http://urn.fi/URN:NBN:fi:au:ucum:r73')
         self.service = models.Service.objects.create(
             subscribe_url='https://service.com/api/subscriptions/',
+            unsubscribe_url='https://service.com/api/unsubscribe/',
             data_url='https://service.com/api/measurements/')
         self.service.requires.add(self.temperature)
 
@@ -145,4 +146,29 @@ class SubscriptionTest(SenseHelAPITestCase):
                 'attribute': apsen_attr.id,
                 'timestamp': serializers.DateTimeField().to_representation(value.updated_at),
                 'value': str(value.value)}],
+            'auth_token': str(self.service.auth_token)})
+
+    def test_unsubscribe(self):
+        # Given that there is a subscription for an external service
+        subscription = self.user.subscriptions.create(service=self.service)
+
+        # And given that the subscriber is signed in
+        self.client.force_login(self.user)
+
+        # When requesting to delete the subscription over the ReST API
+        url = reverse('subscription-detail', kwargs={'pk': subscription.id})
+        with self.mock_requests:
+            response = self.client.delete(url)
+
+        # Then a 204 response is returned
+        self.assertEqual(204, response.status_code)
+
+        # And the subscription is removed from the db
+        self.assertEqual(0, models.Subscription.objects.count())
+
+        # And the unsubscribe request is submitted to the external service
+        ([url], kwargs) = self.mock_requests.last_request
+        self.assertEqual(url, self.service.unsubscribe_url)
+        self.assert_dict_contains(kwargs['json'], {
+            'uuid': str(subscription.uuid),
             'auth_token': str(self.service.auth_token)})
