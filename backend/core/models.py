@@ -77,7 +77,7 @@ class ApartmentSensorAttribute(models.Model):
 class ApartmentSensorValue(models.Model):
     apartment_sensor_attribute = models.ForeignKey(
         ApartmentSensorAttribute, null=True, on_delete=models.CASCADE, related_name='values')
-    value = models.IntegerField()
+    value = models.DecimalField(max_digits=8, decimal_places=1)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
