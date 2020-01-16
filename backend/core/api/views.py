@@ -2,10 +2,14 @@ import binascii
 import logging
 
 from django.conf import settings
+from requests import HTTPError
 from rest_framework import generics, status, viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+import core.models.apartment_sensor_models
+import core.models.sensor_models
+import core.models.service
 from core.utils.elsys import decode_elsys_payload
 
 from . import serializers
@@ -15,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Service.objects.all()
+    queryset = core.models.service.Service.objects.all()
     serializer_class = serializers.ServiceSerializer
 
 
@@ -24,7 +28,7 @@ class ApartmentViewSet(viewsets.ReadOnlyModelViewSet):
     Serialize Apartments current authenticated user belongs to.
     """
     serializer_class = serializers.ApartmentSerializer
-    queryset = models.Apartment.objects.none()  # For inspection only; get_queryset is used live
+    queryset = core.models.apartment_sensor_models.Apartment.objects.none()  # For inspection only; get_queryset is used live
 
     def get_queryset(self):
         return self.request.user.apartments.all()
@@ -32,10 +36,10 @@ class ApartmentViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ApartmentSensorViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ApartmentSensorSerializer
-    queryset = models.ApartmentSensor.objects.none()  # For inspection only; get_queryset is used live
+    queryset = core.models.apartment_sensor_models.ApartmentSensor.objects.none()  # For inspection only; get_queryset is used live
 
     def get_queryset(self):
-        return models.ApartmentSensor.list_for_user(self.request.user)
+        return core.models.apartment_sensor_models.ApartmentSensor.list_for_user(self.request.user)
 
 
 class AvailableServicesList(generics.ListAPIView):
@@ -48,16 +52,16 @@ class AvailableServicesList(generics.ListAPIView):
     serializer_class = serializers.ServiceSerializer
 
     def get_queryset(self):
-        return models.Service.list_available_for_user(self.request.user)
+        return core.models.service.Service.list_available_for_user(self.request.user)
 
 
 class SensorViewSet(viewsets.ModelViewSet):
-    queryset = models.Sensor.objects.all()
+    queryset = core.models.sensor_models.Sensor.objects.all()
     serializer_class = serializers.SensorSerializer
 
 
 class SensorAttributeViewSet(viewsets.ModelViewSet):
-    queryset = models.SensorAttribute.objects.all()
+    queryset = core.models.sensor_models.SensorAttribute.objects.all()
     serializer_class = serializers.SensorAttributeSerializer
 
 
@@ -84,9 +88,22 @@ class SubscriptionViewSet(
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
 
-    def perform_destroy(self, instance):
-        instance.delete_in_service()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        try:
+            instance.delete_in_service()
+        except HTTPError:
+            return Response('Could not unsubscribe in service.', status=502)
+
         instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except HTTPError:
+            return Response('Could not register subscription with service.', status=502)
 
 
 @api_view(['POST'])
@@ -96,7 +113,7 @@ def digita_gw(request):
     Digita GW endpoint implementation
     """
     identifier = request.data['DevEUI_uplink']['DevEUI']
-    apsen = models.ApartmentSensor.objects.get_or_create(identifier=identifier)[0]
+    apsen = core.models.apartment_sensor_models.ApartmentSensor.objects.get_or_create(identifier=identifier)[0]
     payload = binascii.unhexlify(request.data['DevEUI_uplink']['payload_hex'])
     decoded_payload = decode_elsys_payload(payload)
     mapping = settings.DIGITA_GW_PAYLOAD_TO_ATTRIBUTES  # type: dict
@@ -105,9 +122,9 @@ def digita_gw(request):
     for key, value in decoded_payload.items():
         uri = mapping.get(key, '')
         if uri:
-            attr = models.SensorAttribute.objects.get_or_create(uri=uri, defaults={'description': key})[0]
+            attr = core.models.sensor_models.SensorAttribute.objects.get_or_create(uri=uri, defaults={'description': key})[0]
         else:
-            attr = models.SensorAttribute.objects.get_or_create(description=key)[0]
+            attr = core.models.sensor_models.SensorAttribute.objects.get_or_create(description=key)[0]
         apsen_attr = apsen.attributes.get_or_create(attribute=attr)[0]
         new_values.append(apsen_attr.values.create(value=value))
     models.Subscription.handle_new_values(new_values)
