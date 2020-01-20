@@ -15,6 +15,7 @@ django==2.2.8
 djangorestframework==3.9.4
 entrypoints==0.3          # via flake8
 flake8==3.7.9
+gunicorn==20.0.4
 idna==2.8                 # via requests
 itypes==1.1.0             # via coreapi
 jinja2==2.10.3            # via coreschema
@@ -31,3 +32,6 @@ sqlparse==0.3.0           # via django
 uritemplate==3.0.0        # via coreapi
 urllib3==1.25.7           # via requests
 uuid==1.30
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
