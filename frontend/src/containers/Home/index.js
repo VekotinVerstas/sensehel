@@ -10,6 +10,7 @@ import API from 'services/Api';
 import CustomizedSnackbar from 'components/Snackbar';
 import LocalStorageKeys from 'config/LocalStorageKeys';
 import SensorConfig from 'config/SensorConfig';
+import Images from "assets/Images";
 
 class HomePage extends Component {
   state = {
@@ -152,6 +153,11 @@ class HomePage extends Component {
                 <NoSubscriptionsCard onClick={this.handleChangeTab} />
               )}
             </div>
+            <img
+              src={Images.Banner}
+              alt="logo"
+              className="img--banner"
+            />
           </div>
 
           <CustomizedSnackbar

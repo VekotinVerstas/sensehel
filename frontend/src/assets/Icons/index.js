@@ -25,6 +25,7 @@ export default {
   Failure: require('./Fail.png'),
   About_Icon: require('./About.png'),
   About_Icon_Active: require('./About_Light grey.png'),
+  Logout_Icon: require('./Logout.svg'),
   Home_Icon: require('./Home.png'),
   Home_Icon_Active: require('./Home_Light grey.png'),
   Sensors_Icon: require('./Sensors.png'),
