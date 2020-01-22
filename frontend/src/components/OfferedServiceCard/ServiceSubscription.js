@@ -83,21 +83,23 @@ class ServiceSubscription extends Component {
               />
             </div>
           }
-          <hr/>
-          <CheckboxesSection
-            consentChecked={subscribed || consentChecked}
-            handleChange={this.handleCheckChange}
-            classes={classes}
-            disabled={subscribed}
-            termsAndConditions={service.eula_url}
-          />
+          {service.eula_url && <>
+            <hr/>
+            <CheckboxesSection
+              consentChecked={subscribed || consentChecked}
+              handleChange={this.handleCheckChange}
+              classes={classes}
+              disabled={subscribed}
+              termsAndConditions={service.eula_url}
+            />
+          </>}
         </div>}
 
         <BottomButton
           variant={subscribed ? 'negative' : 'default'}
           title={buttonTitle}
           onClick={() => subscribed ? this.onUnsubscribeClick() : this.onSubscribeClick()}
-          disabled={!subscribed && (!consentChecked || !selectedAttributes.length)}
+          disabled={!subscribed && (!(consentChecked || !service.eula_url) || !selectedAttributes.length)}
           loading={requesting}
         />
 

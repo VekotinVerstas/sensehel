@@ -18,7 +18,7 @@ class Service(models.Model):
         SensorAttribute, related_name='services',
         help_text='At least one of these attributes must be included in any subscription to this service.')
 
-    eula_url = models.CharField(max_length=255)
+    eula_url = models.CharField(max_length=255, blank=True)
     img_logo_url = models.CharField(max_length=255, null=True)
     img_service_url = models.CharField(max_length=255, null=True)
 

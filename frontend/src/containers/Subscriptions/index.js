@@ -6,6 +6,7 @@ import OfferedServiceCard from '../../components/OfferedServiceCard';
 import CustomizedSnackbar from '../../components/Snackbar';
 import API from '../../services/Api';
 import LocalStorageKeys from '../../config/LocalStorageKeys';
+import Images from "assets/Images";
 
 class SubscriptionsPage extends Component {
   state = {
@@ -154,6 +155,11 @@ class SubscriptionsPage extends Component {
               handleUnsubscribe={() => this.handleUnsubscribe(service.id)}
             />
           ))}
+          <img
+            src={Images.Banner}
+            alt="logo"
+            className="img--banner"
+          />
         </div>
 
         <CustomizedSnackbar
