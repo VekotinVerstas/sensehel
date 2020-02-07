@@ -141,3 +141,9 @@ DIGITA_GW_PAYLOAD_TO_ATTRIBUTES = {
     'motion': 'http://finto.fi/yso/en/page/p9266',
     'co2': 'http://finto.fi/afo/en/page/p4770',
 }
+
+ADMINS = [['FVH Django admins', 'django-admins@forumvirium.fi']]
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_PORT = 25
