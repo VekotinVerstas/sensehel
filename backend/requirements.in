@@ -10,3 +10,4 @@ coverage>=5.0
 uuid
 requests>=2.22
 gunicorn>=20.0
+sentry-sdk==0.14.1

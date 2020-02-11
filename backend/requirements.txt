@@ -33,5 +33,7 @@ uritemplate==3.0.0        # via coreapi
 urllib3==1.25.7           # via requests
 uuid==1.30
 
+sentry-sdk==0.14.1
+
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

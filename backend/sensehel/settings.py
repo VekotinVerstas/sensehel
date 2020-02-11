@@ -146,8 +146,23 @@ DIGITA_GW_PAYLOAD_TO_ATTRIBUTES = {
     'co2': 'http://finto.fi/afo/en/page/p4770',
 }
 
-ADMINS = [['FVH Django admins', 'django-admins@forumvirium.fi']]
+# Uncomment to enable direct error emails; disabled now in favor of Sentry:
+# ADMINS = [['FVH Django admins', 'django-admins@forumvirium.fi']]
+
 EMAIL_HOST = 'localhost'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_HOST_USER = ''
 EMAIL_PORT = 25
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://4b7ca18696dd4b9486ec056011d44194@sentry.fvh.io/2",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
