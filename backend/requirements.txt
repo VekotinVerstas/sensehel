@@ -10,7 +10,7 @@ coreapi==2.3.3
 coreschema==0.0.4         # via coreapi
 django-cors-headers==2.5.3
 django-extensions==2.2.5
-django==2.2.8
+django==2.2.10
 djangorestframework==3.9.4
 idna==2.8                 # via requests
 itypes==1.1.0             # via coreapi
