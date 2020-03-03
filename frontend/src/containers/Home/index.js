@@ -42,7 +42,7 @@ class HomePage extends Component {
     const currentUser = JSON.parse(
       localStorage.getItem(LocalStorageKeys.CURRENT_USER)
     );
-    const name = `${currentUser.first_name} ${currentUser.last_name}`;
+    const name = currentUser.first_name ? `${currentUser.first_name} ${currentUser.last_name}` : currentUser.username;
     this.setState({ name });
   };
 
