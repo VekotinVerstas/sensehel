@@ -10,7 +10,7 @@ class Apartment(models.Model):
     postal_code = models.CharField(max_length=10)
 
     def __str__(self):
-        return f'{self.user.first_name}, {self.user.last_name} - {self.street} ({self.postal_code})'
+        return f'{self.user.name()} - {self.street} ({self.postal_code})'
 
 
 class ApartmentSensor(models.Model):

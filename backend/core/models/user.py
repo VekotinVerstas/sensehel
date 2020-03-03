@@ -19,3 +19,6 @@ class User(AbstractUser):
 
     # Ask non null field values during createsuperuser
     REQUIRED_FIELDS = AbstractUser.REQUIRED_FIELDS + ['phone']
+
+    def name(self):
+        return self.get_full_name() or self.username
