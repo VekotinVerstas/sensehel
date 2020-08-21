@@ -65,6 +65,17 @@ class SensorAttributeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SensorAttributeSerializer
 
 
+class AftereffectResponse(Response):
+    def __init__(self, *args, **kwargs):
+        self.aftereffect = kwargs.pop('aftereffect', None)
+        return super().__init__(*args, **kwargs)
+
+    def close(self):
+        super().close()
+        if self.aftereffect:
+            self.aftereffect()
+
+
 class SubscriptionViewSet(
     viewsets.mixins.ListModelMixin,
     viewsets.mixins.CreateModelMixin,
@@ -100,10 +111,18 @@ class SubscriptionViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         try:
-            return super().create(request, *args, **kwargs)
+            self.perform_create(serializer)
         except HTTPError:
             return Response('Could not register subscription with service.', status=502)
+
+        headers = self.get_success_headers(serializer.data)
+        return AftereffectResponse(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers,
+            aftereffect=lambda: serializer.submit_history())
 
 
 @api_view(['POST'])
