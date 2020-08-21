@@ -96,13 +96,15 @@ class CreateSubscriptionSerializer(serializers.ModelSerializer):
         fields = ('service', 'attributes', 'include_history')
 
     def create(self, validated_data):
-        include_history = validated_data.pop('include_history', False)
+        self.include_history = validated_data.pop('include_history', False)
         with transaction.atomic():
             subscription = super().create(dict(user=self.context['request'].user, **validated_data))
             subscription.create_in_service()
-        if include_history:
-            subscription.submit_history()
         return subscription
+
+    def submit_history(self):
+        if self.include_history and self.instance:
+            self.instance.submit_history()
 
 
 class SubscriptionSerializer(serializers.HyperlinkedModelSerializer):
