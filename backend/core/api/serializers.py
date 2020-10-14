@@ -113,3 +113,12 @@ class SubscriptionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Subscription
         fields = ('id', 'uuid', 'created_at', 'updated_at', 'service')
+
+
+class CustomReportSubscriptionSerializer(serializers.ModelSerializer):
+    service = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    img_logo_url = serializers.SlugRelatedField(slug_field='img_logo_url', read_only=True, source='service')
+
+    class Meta:
+        model = models.CustomReportSubscription
+        fields = ('id', 'report_url', 'preview_url', 'service', 'img_logo_url')

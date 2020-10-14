@@ -79,6 +79,10 @@ class Api {
     return res;
   }
 
+  async getCustomServiceSubscriptions() {
+    return this.api.get('custom_subscriptions/');
+  }
+
   addSubscribedService(id, apsenAttrIds, includeHistory) {
     return this.api.post('subscriptions/', {
       service: id,

@@ -11,10 +11,12 @@ import CustomizedSnackbar from 'components/Snackbar';
 import LocalStorageKeys from 'config/LocalStorageKeys';
 import SensorConfig from 'config/SensorConfig';
 import Images from "assets/Images";
+import SubscribedCustomServiceCard from "components/SubscribedCustomServiceCard";
 
 class HomePage extends Component {
   state = {
     serviceSubscriptions: [],
+    customServiceSubscriptions: [],
     refreshing: false,
     errorMessage: '',
     name: '',
@@ -48,9 +50,10 @@ class HomePage extends Component {
 
   fetchSubscribedServices = async () => {
     try {
-      const serviceSubscriptions = await API. getServiceSubscriptions();
+      const serviceSubscriptions = await API.getServiceSubscriptions();
+      const customServiceSubscriptions = await API.getCustomServiceSubscriptions();
 
-      this.setState({ serviceSubscriptions });
+      this.setState({ serviceSubscriptions, customServiceSubscriptions });
     } catch (e) {
       this.setState({
         errorMessage: {
@@ -106,6 +109,7 @@ class HomePage extends Component {
   render() {
     const {
       serviceSubscriptions,
+      customServiceSubscriptions,
       refreshing,
       errorMessage,
       name,
@@ -145,13 +149,16 @@ class HomePage extends Component {
                 subscriptions
               </p>
 
-              {serviceSubscriptions.length > 0 ? (
+              {serviceSubscriptions.length > 0 ?
                 serviceSubscriptions.map((subscription) => (
                   <SubscribedServiceCard key={subscription.uuid} subscription={subscription}/>
                 ))
-              ) : (
-                <NoSubscriptionsCard onClick={this.handleChangeTab} />
-              )}
+              : customServiceSubscriptions.length > 0 ?
+                customServiceSubscriptions.map((subscription) => (
+                  <SubscribedCustomServiceCard key={subscription.id} subscription={subscription}/>
+                ))
+              : <NoSubscriptionsCard onClick={this.handleChangeTab} />
+              }
             </div>
             <img
               src={Images.Banner}

@@ -3,7 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count, Avg, Min, Max
 
 from .models import (Apartment, ApartmentSensor, ApartmentSensorValue, Sensor,
-                     SensorAttribute, Service, Subscription, User, ApartmentSensorAttribute)
+                     SensorAttribute, Service, Subscription, User, ApartmentSensorAttribute, CustomReportService,
+                     CustomReportSubscription)
 
 
 class MyUserAdmin(UserAdmin):
@@ -81,3 +82,6 @@ admin.site.register(Service)
 admin.site.register(Subscription)
 admin.site.register(SensorAttribute, SensorAttributeAdmin)
 admin.site.register(User, MyUserAdmin)
+
+admin.site.register(CustomReportService)
+admin.site.register(CustomReportSubscription)

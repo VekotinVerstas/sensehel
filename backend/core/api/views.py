@@ -125,6 +125,14 @@ class SubscriptionViewSet(
             aftereffect=lambda: serializer.submit_history())
 
 
+class CustomReportSubscriptionViewSet(viewsets.mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = serializers.CustomReportSubscriptionSerializer
+    queryset = models.CustomReportSubscription.objects.none()  # For inspection only; get_queryset is used live
+
+    def get_queryset(self):
+        return models.CustomReportSubscription.objects.filter(user=self.request.user)
+
+
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def digita_gw(request):
