@@ -149,15 +149,18 @@ class HomePage extends Component {
                 subscriptions
               </p>
 
-              {serviceSubscriptions.length > 0 ?
+              {serviceSubscriptions.length > 0 &&
                 serviceSubscriptions.map((subscription) => (
                   <SubscribedServiceCard key={subscription.uuid} subscription={subscription}/>
                 ))
-              : customServiceSubscriptions.length > 0 ?
+              }
+              {customServiceSubscriptions.length > 0 &&
                 customServiceSubscriptions.map((subscription) => (
                   <SubscribedCustomServiceCard key={subscription.id} subscription={subscription}/>
                 ))
-              : <NoSubscriptionsCard onClick={this.handleChangeTab} />
+              }
+              {!serviceSubscriptions.length && !customServiceSubscriptions.length &&
+                <NoSubscriptionsCard onClick={this.handleChangeTab} />
               }
             </div>
             <img
