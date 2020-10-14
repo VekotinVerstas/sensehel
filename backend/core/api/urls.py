@@ -10,6 +10,7 @@ router.register(r'sensorattributes', views.SensorAttributeViewSet)
 router.register(r'services', views.ServiceViewSet)
 router.register(r'apartments', views.ApartmentViewSet)
 router.register(r'subscriptions', views.SubscriptionViewSet)
+router.register(r'custom_subscriptions', views.CustomReportSubscriptionViewSet)
 router.register(r'apartmentsensors', views.ApartmentSensorViewSet)
 
 schema_view = get_schema_view(title='SenseHel API')
