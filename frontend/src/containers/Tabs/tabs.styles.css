@@ -4,7 +4,7 @@
 }
 
 .tabs-page__page {
-  height: 91%;
+  height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: auto;
@@ -54,4 +54,10 @@
   .bottom-tab-navigator {
     height: 60px;
   }
+}
+.img--banner {
+  max-width: 100%;
+  width: 500px;
+  display: block;
+  margin: 30px auto 0 auto;
 }

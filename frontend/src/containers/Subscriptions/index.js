@@ -6,6 +6,7 @@ import OfferedServiceCard from '../../components/OfferedServiceCard';
 import CustomizedSnackbar from '../../components/Snackbar';
 import API from '../../services/Api';
 import LocalStorageKeys from '../../config/LocalStorageKeys';
+import Images from "assets/Images";
 
 class SubscriptionsPage extends Component {
   state = {
@@ -96,9 +97,9 @@ class SubscriptionsPage extends Component {
     });
   };
 
-  handleSubscribe = async id => {
+  handleSubscribe = async (id, apsenAttrIds, includeHistory) => {
     try {
-      await API.addSubscribedService(id);
+      await API.addSubscribedService(id, apsenAttrIds, includeHistory);
       this.handleRequestSuccess({
         title: 'Successfully subscribed!',
         subtitle: 'You can now view your subscriptions in your home page'
@@ -110,6 +111,7 @@ class SubscriptionsPage extends Component {
         title: 'Could not subscribe to service',
         subtitle: `${e.message}`
       });
+      throw e;
     }
   };
 
@@ -131,7 +133,7 @@ class SubscriptionsPage extends Component {
 
   refetchSubscriptions = async () => {
     // Refetch subscribed services and set state to rerender
-    await API.getSubscribedServices();
+    await API. getServiceSubscriptions();
     this.fetchSubscribedServiceIds();
   };
 
@@ -148,10 +150,16 @@ class SubscriptionsPage extends Component {
               key={service.id}
               service={service}
               subscribed={this.isSubscribed(service.id)}
-              handleSubscribe={() => this.handleSubscribe(service.id)}
+              handleSubscribe={(apsenAttrIds, includeHistory) =>
+                this.handleSubscribe(service.id, apsenAttrIds, includeHistory)}
               handleUnsubscribe={() => this.handleUnsubscribe(service.id)}
             />
           ))}
+          <img
+            src={Images.Banner}
+            alt="logo"
+            className="img--banner"
+          />
         </div>
 
         <CustomizedSnackbar

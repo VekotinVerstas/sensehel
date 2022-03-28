@@ -21,17 +21,17 @@ services:
     build: ./backend/
     restart: always
     environment:
-      DB_HOST: dev-db
+      DB_HOST: localhost
       DB_USER: postgres
       DB_PASSWORD: password
       DB_PORT: 5432
       DB_NAME: forum
-    ports:
-      - "28000:8000"
+    network_mode: host
     depends_on:
       - dev-db
     volumes:
       - ./backend:/app
+    command: gunicorn sensehel.wsgi:application --bind 0.0.0.0:28000 --access-logfile log/access.log --error-logfile log/error.log --workers 4
 
   frontend:
       build: ./frontend

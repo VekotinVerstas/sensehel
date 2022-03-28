@@ -20,16 +20,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nt_d*)c*ixi!^gao-sw8rf3msw&v305%(g_!r1!w@a2=ms$jin'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     # Allow everything during development
     CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -121,7 +121,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.getenv('STATIC_ROOT') or os.path.join(BASE_DIR, "static")
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -132,6 +133,9 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+#SECURE_SSL_REDIRECT = not DEBUG
+
 # Digita GW API mapping settings
 # Dict key should match the key from decoding payload
 # Dict value should match the URI for attribute
@@ -141,3 +145,24 @@ DIGITA_GW_PAYLOAD_TO_ATTRIBUTES = {
     'motion': 'http://finto.fi/yso/en/page/p9266',
     'co2': 'http://finto.fi/afo/en/page/p4770',
 }
+
+# Uncomment to enable direct error emails; disabled now in favor of Sentry:
+# ADMINS = [['FVH Django admins', 'django-admins@forumvirium.fi']]
+
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_PORT = 25
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://4b7ca18696dd4b9486ec056011d44194@sentry.fvh.io/2",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+

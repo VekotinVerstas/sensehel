@@ -11,25 +11,18 @@ const SensorValueCard = ({
   refreshing
 }) => (
   <div className="service-card">
-    <div className="service-card__header">
-      <span className="body-text">{title}</span>
-      <img className="service-card__header__icon" src={icon} alt={title} />
-    </div>
-
     {!refreshing ? (
       <div>
-        <span className="large-number">
+        <img className="service-card__header__icon" src={icon} alt={title} />
+        <span className="large-number" style={{ margin: '0 4px 0 8px' }}>
           {value}
           <span className="number">{unit}</span>
         </span>
+        <span className="small-body"> {lastUpdated}</span>
       </div>
     ) : (
       <CircularProgress className="service-card__spinner" />
     )}
-
-    <div className="small-body">
-      {!refreshing ? `Updated ${lastUpdated}` : 'Refreshing'}
-    </div>
   </div>
 );
 

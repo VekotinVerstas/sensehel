@@ -4,7 +4,10 @@ import Icons from '../../assets/Icons';
 import HomePage from '../Home';
 import SubscriptionsPage from '../Subscriptions';
 import SensorsPage from '../Sensors';
-import AboutPage from '../About';
+import Images from "assets/Images";
+import API from "services/Api";
+import ConfirmDialog from "components/ConfirmDialog";
+import * as PropTypes from "prop-types";
 
 const tabOptions = [
   {
@@ -24,12 +27,6 @@ const tabOptions = [
     component: () => <SensorsPage />,
     icon: Icons.Sensors_Icon,
     activeIcon: Icons.Sensors_Icon_Active
-  },
-  {
-    name: 'about',
-    component: () => <AboutPage />,
-    icon: Icons.About_Icon,
-    activeIcon: Icons.About_Icon_Active
   }
 ];
 
@@ -44,7 +41,7 @@ class Tabs extends Component {
   };
 
   render() {
-    const { activeTab } = this.state;
+    const { activeTab} = this.state;
 
     return (
       <div className="tabs-page">
@@ -62,20 +59,66 @@ class Tabs extends Component {
   }
 }
 
-const BottomTabNavigator = ({ tabs, activeTab, onTabChange }) => (
-  <div className="bottom-tab-navigator">
-    {tabs.map((t, i) => (
-      <div className="icon-container" key={t.name}>
-        <img
-          className="icon-container__img"
-          src={activeTab.name === t.name ? t.activeIcon : t.icon}
-          onClick={() => onTabChange(i)}
-          alt={t.name}
-          onKeyDown={() => this.onTabChange(i)}
+class BottomTabNavigator extends Component {
+  state = {
+    logoutConfirmOpen: false
+  };
+
+  onLogout = () => {
+    this.setState({ logoutConfirmOpen: true });
+  };
+
+  handleLogout = () => {
+    localStorage.clear();
+    API.setToken('');
+    window.location.reload()
+  };
+
+  onCloseConfirm = () => {
+    this.setState({ logoutConfirmOpen: false});
+  };
+
+  render() {
+    const {tabs, activeTab, onTabChange} = this.props;
+    const {logoutConfirmOpen} = this.state;
+
+    return (
+      <div className="bottom-tab-navigator">
+        {tabs.map((t, i) => (
+          <div className="icon-container" key={t.name}>
+            <img
+              className="icon-container__img"
+              src={activeTab.name === t.name ? t.activeIcon : t.icon}
+              onClick={() => onTabChange(i)}
+              alt={t.name}
+              onKeyDown={() => this.onTabChange(i)}
+            />
+          </div>
+        ))}
+        <div className="icon-container">
+          <img
+            className="icon-container__img"
+            src={Icons.Logout_Icon}
+            onClick={() => this.onLogout()}
+            alt="Log out"
+          />
+        </div>
+        <ConfirmDialog
+          title="Are you sure you want to logout?"
+          description="You will be redirected to login screen"
+          handleConfirm={this.handleLogout}
+          open={logoutConfirmOpen}
+          handleClose={this.onCloseConfirm}
         />
       </div>
-    ))}
-  </div>
-);
+    );
+  }
+}
+
+BottomTabNavigator.propTypes = {
+  tabs: PropTypes.any,
+  activeTab: PropTypes.any,
+  onTabChange: PropTypes.any
+}
 
 export default Tabs;

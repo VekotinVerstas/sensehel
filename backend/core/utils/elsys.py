@@ -76,7 +76,7 @@ def decode_elsys_payload(data):
             obj['pulse1'] = pulse1
             i += 2
         else:
-            raise ValueError(f'Unsupported value {val}')
+            logging.warning(f'Unsupported value {val}')
 
         i += 1  # compensate for first byte
 

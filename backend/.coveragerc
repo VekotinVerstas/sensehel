@@ -1,0 +1,9 @@
+[run]
+omit =
+    sensehel/wsgi.py
+    sensehel/settings.py
+    */migrations/*
+    # Measure coverage of application code, not the tests themselves:
+    */*_tests.py
+    */tests/*
+    manage.py
