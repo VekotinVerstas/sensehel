@@ -139,10 +139,19 @@ def digita_gw(request):
     """
     Digita GW endpoint implementation
     """
-    identifier = request.data['DevEUI_uplink']['DevEUI']
+    try:
+        identifier = request.data['DevEUI_uplink']['DevEUI']
+    except KeyError:
+        return Response({"message": "Message ignored"})
+
     apsen = core.models.apartment_sensor_models.ApartmentSensor.objects.get_or_create(identifier=identifier)[0]
     payload = binascii.unhexlify(request.data['DevEUI_uplink']['payload_hex'])
-    decoded_payload = decode_elsys_payload(payload)
+
+    try:
+        decoded_payload = decode_elsys_payload(payload)
+    except IndexError as err:
+        return Response({"message": "Failed to decode payload: {}".format(err)})
+
     mapping = settings.DIGITA_GW_PAYLOAD_TO_ATTRIBUTES  # type: dict
 
     new_values = []
@@ -156,3 +165,4 @@ def digita_gw(request):
         new_values.append(apsen_attr.values.create(value=value))
     models.Subscription.handle_new_values(new_values)
     return Response({"message": "Updated successfully"})
+

@@ -4,3 +4,4 @@ postgres-data/
 venv
 backend/static/
 backend/log/
+docker-compose.yml

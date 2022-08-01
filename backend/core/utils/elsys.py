@@ -1,4 +1,5 @@
 import binascii
+import logging
 
 TYPE_TEMP = 0x01  # temp 2 bytes -3276.8°C -->3276.7°C
 TYPE_RH = 0x02  # Humidity 1 byte  0-100%
