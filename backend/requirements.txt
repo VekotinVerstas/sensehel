@@ -4,36 +4,73 @@
 #
 #    pip-compile
 #
-certifi==2019.11.28       # via requests
-chardet==3.0.4            # via requests
+certifi==2019.11.28
+    # via
+    #   requests
+    #   sentry-sdk
+chardet==3.0.4
+    # via requests
 coreapi==2.3.3
-coreschema==0.0.4         # via coreapi
+    # via -r requirements.in
+coreschema==0.0.4
+    # via coreapi
 coverage==5.0.1
-django-cors-headers==2.5.3
-django-extensions==2.2.5
+    # via -r requirements.in
 django==2.2.8
-djangorestframework==3.9.4
-entrypoints==0.3          # via flake8
+    # via
+    #   -r requirements.in
+    #   django-cors-headers
+    #   djangorestframework
+django-cors-headers==2.5.3
+    # via -r requirements.in
+django-extensions==2.2.5
+    # via -r requirements.in
+djangorestframework==3.11.2
+    # via -r requirements.in
+entrypoints==0.3
+    # via flake8
 flake8==3.7.9
+    # via -r requirements.in
 gunicorn==20.0.4
-idna==2.8                 # via requests
-itypes==1.1.0             # via coreapi
-jinja2==2.10.3            # via coreschema
-markupsafe==1.1.1         # via jinja2
-mccabe==0.6.1             # via flake8
+    # via -r requirements.in
+idna==2.8
+    # via requests
+itypes==1.1.0
+    # via coreapi
+jinja2==2.10.3
+    # via coreschema
+markupsafe==1.1.1
+    # via jinja2
+mccabe==0.6.1
+    # via flake8
 psycopg2-binary==2.8.4
-pycodestyle==2.5.0        # via flake8
-pyflakes==2.1.1           # via flake8
-pytz==2019.3              # via django
+    # via -r requirements.in
+pycodestyle==2.5.0
+    # via flake8
+pyflakes==2.1.1
+    # via flake8
+pytz==2019.3
+    # via django
 pyyaml==5.2
+    # via -r requirements.in
 requests==2.22.0
-six==1.13.0               # via django-extensions
-sqlparse==0.3.0           # via django
-uritemplate==3.0.0        # via coreapi
-urllib3==1.25.7           # via requests
-uuid==1.30
-
+    # via
+    #   -r requirements.in
+    #   coreapi
 sentry-sdk==0.14.1
+    # via -r requirements.in
+six==1.13.0
+    # via django-extensions
+sqlparse==0.3.0
+    # via django
+uritemplate==3.0.0
+    # via coreapi
+urllib3==1.25.7
+    # via
+    #   requests
+    #   sentry-sdk
+uuid==1.30
+    # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
